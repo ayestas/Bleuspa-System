@@ -1,0 +1,35 @@
+.canvasImg{
+    border: 2px solid #f2f2f2;
+    margin-right: 20px;
+    background-image: url('../../assets/Rostro.png');
+}
+
+#botonClear {
+    border: 0 #50BFB4;
+    border-radius: 5px;
+
+    width: 260px;
+    height: 40px;
+
+    background: #50BFB4;
+
+    font-size: small;
+}
+
+#botonClear:hover {
+    background: #69d2c8;
+    color: #33998f;
+
+    cursor: pointer;
+}
+
+#botonClear:active {
+    background: #3c8e86;
+    color: #75e3d8;
+
+    font-weight: 700;
+}
+
+#botonClear:enabled {
+    color: aliceblue;
+}

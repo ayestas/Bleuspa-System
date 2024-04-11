@@ -1,0 +1,124 @@
+#Titulo {
+    margin-top: 6vw;
+    margin-bottom: -8%;
+
+    text-align: center;
+    color: #33998f;
+    font-size: 0.5in;
+}
+
+#Box {
+    margin: auto;
+    margin-top: 10vw;
+
+    width: 90%;
+    height: fit-content;
+
+    padding: 30px;
+
+    background-color: #ffffff;
+    border-radius: 5px;
+}
+
+#filas {
+    margin-bottom: 10px;
+}
+
+#filas_file {
+    margin-top: 20px;
+    margin-bottom: 10px;
+}
+
+#Checkboxs {
+    display: flex;
+}
+
+#chkBox {
+    margin-bottom: 10px;
+}
+
+#botones {
+    margin-bottom: 10px;
+    display: flex;
+}
+
+input[type="file"] {
+    display: none;
+    width: 200px;
+}
+
+.custom-file-upload {
+    margin-top: 10px;
+    margin-bottom: 10px;
+
+    border-radius: 5px;
+    display: inline-block;
+    padding: 6px 12px;
+    cursor: pointer;
+    width: 240px;
+
+    background: #50BFB4;
+    text-align: center;
+    color: aliceblue;
+}
+
+#Box_Images {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+#ImageFile {
+    border: 1px solid #33998f;
+
+    width: 250px;
+    height: 350px;
+}
+
+#PhotoImage:first-child {
+    margin-right: 8vw;
+}
+
+#PhotoImage {
+    text-align: center;
+}
+
+#boton {
+    margin-bottom: 10px;
+
+    border: 0 #50BFB4;
+    border-radius: 5px;
+
+    width: 260px;
+    height: 40px;
+
+    background: #50BFB4;
+
+    font-size: small;
+}
+
+#botonDiv {
+    flex: 1;
+}
+
+#botonDiv:last-child {
+    text-align: end;
+}
+
+#boton:hover {
+    background: #69d2c8;
+    color: #33998f;
+
+    cursor: pointer;
+}
+
+#boton:active {
+    background: #3c8e86;
+    color: #75e3d8;
+
+    font-weight: 700;
+}
+
+#boton:enabled {
+    color: aliceblue;
+}

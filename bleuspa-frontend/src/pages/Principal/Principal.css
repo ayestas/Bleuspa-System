@@ -1,0 +1,9 @@
+.Box_P {
+    height: fit-content;
+
+    margin: auto;
+    margin-top: 12%;
+    margin-left: 45vw;
+
+    padding: 20px;
+}

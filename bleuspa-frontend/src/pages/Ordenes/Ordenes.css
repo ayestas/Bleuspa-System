@@ -1,0 +1,174 @@
+#Titulo {
+    margin-top: 6vw;
+    margin-bottom: -8%;
+    
+    text-align: center;
+    color: #33998f;
+    font-size: 0.5in;
+}
+
+#Box {
+    margin: auto;
+    margin-top: 10vw;
+
+    width: 90%;
+    height: fit-content;
+
+    padding: 30px;
+
+    background-color: #ffffff;
+    border-radius: 5px;
+}
+
+#Button_Group {
+    text-align:center;
+
+    margin-left: 8.5vw;
+    margin-bottom: 10px;
+}
+
+#textFields {
+    margin-bottom: 10px;
+}
+
+.productos {
+    display: flex;
+    flex-direction: row;
+
+    margin-bottom: 10px;
+}
+
+#button_acp {
+    margin-top: 16px;
+    margin-right: 2vw;
+
+    border: 0 #2fbc67;
+    border-radius: 5px;
+
+    width: 200px;
+    height: 52px;
+
+    background: #2fbc67;
+    color: #ffffff;
+
+    font-size: medium;
+}
+
+#button {
+    margin-right: 6vw;
+    margin-bottom: 10px;
+
+    border: 0 #50BFB4;
+    border-radius: 5px;
+
+    width: 170px;
+    height: 40px;
+
+    background: #50BFB4;
+
+    font-size: small;
+}
+
+#button:hover {
+    background: #69d2c8;
+    color: #33998f;
+
+    cursor: pointer;
+}
+
+#button_acp:hover {
+    background: #41df80;
+    color: #1d8044;
+
+    cursor: pointer;
+    font-weight: 700;
+}
+
+#button:active {
+    background: #3c8e86;
+    color: #75e3d8;
+
+    font-weight: 700;
+}
+
+#button:enabled {
+    color: aliceblue;
+}
+
+#button_Del {
+    margin-top: 10px;
+    margin-right: 1vw;
+    margin-bottom: 10px;
+
+    border: 0 #e44242;
+    border-radius: 5px;
+
+    width: 170px;
+    height: 50px;
+
+    background: #e44242;
+
+    font-size: small;
+}
+
+#button_Del:hover {
+    background: #ff7d7d;
+    color: #660707;
+
+    cursor: pointer;
+}
+
+#button_Del:active {
+    background: #a74040;
+    color: #ff7d7d;
+
+    font-weight: 700;
+}
+
+#button_Del:enabled {
+    color: aliceblue;
+}
+
+#button_Del:disabled {
+    background: #c26060;
+    color: #b68f8f;
+}
+
+#button_Agr {
+    margin-top: 10px;
+    margin-right: 1vw;
+    margin-bottom: 10px;
+
+    border: 0 #50BFB4;
+    border-radius: 5px;
+
+    width: 170px;
+    height: 50px;
+
+    background: #50BFB4;
+
+    font-size: small;
+}
+
+#button_Agr:hover {
+    background: #69d2c8;
+    color: #33998f;
+
+    cursor: pointer;
+}
+
+#button_Agr:active {
+    background: #3c8e86;
+    color: #75e3d8;
+
+    font-weight: 700;
+}
+
+#button_Agr:enabled {
+    color: aliceblue;
+}
+
+#outlined-basic {
+    width: 300px;
+    height: 20px;
+}

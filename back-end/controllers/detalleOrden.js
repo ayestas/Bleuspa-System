@@ -2,6 +2,34 @@ const DetalleOrden = require("../models/detalleOrden");
 const Orden = require("../models/orden");
 const Producto = require("../models/producto");
 
+exports.getDetallesOrden = async (req, res) => {
+    const detalle = await DetalleOrden.find();
+
+    try
+    {
+        if (!detalle)
+        {
+            return res.status(400).json({
+                success: false,
+                message: "No existe ningún detalle de orden."
+            })
+        }
+        
+        res.status(201).json({
+            success: true,
+            detalle
+        })
+    }
+    catch (error)
+    {
+        console.log(error);
+        res.status(400).json({
+            success: false,
+            message: error.message
+        })
+    }
+}
+
 exports.addDetalleOrden = async (req, res) => {
     const { id_order, id_product } = req.body;
     

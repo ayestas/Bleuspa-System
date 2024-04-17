@@ -30,7 +30,12 @@ exports.getProductos = async (req, res) => {
 
 exports.getProductosLikeName = async (req, res) => {
     const { name } = req.params;
-    const producto = await Producto.find({ "name" : { $regex : new RegExp(name, "i") } } );
+    const producto = await Producto.find({ 
+        "name" : { 
+            $regex: name, 
+            $options: 'i'
+        }
+    });
     
     try
     {
@@ -58,8 +63,6 @@ exports.getProductosLikeName = async (req, res) => {
 }
 
 exports.addProducto = async (req, res) => {
-    const { expiration_date } = req.body;
-
     try
     {
         const producto = await Producto.create(req.body);

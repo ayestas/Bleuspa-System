@@ -30,7 +30,12 @@ exports.getClientes = async (req, res) => {
 
 exports.getClienteLikeName = async (req, res) => {
     const { name } = req.params;
-    const cliente = await Cliente.find({ "name" : { $regex : new RegExp(name, "i") } } );
+    const cliente = await Cliente.find({ 
+        "name": { 
+            $regex: name, 
+            $options: 'i' 
+        } 
+    });
     
     try
     {

@@ -4,15 +4,22 @@ const Cliente = require("../models/cliente");
 exports.getCitas = async (req, res) => {
     const cita = await Cita.aggregate([
         {
-          "$lookup": {
-            "from": "clientes",
-            "localField": "id_client",
-            "foreignField": "_id",
-            "as": "cliente"
-          }
+            $lookup: {
+                "from": "clientes",
+                "localField": "id_client",
+                "foreignField": "_id",
+                "as": "cliente"
+            }
         },
-        { $project : { _id : 1, id_client : 1, cliente: '$cliente', date: 1} }
-      ])
+        { 
+            $project: { 
+                _id : 1, 
+                id_client : 1, 
+                cliente: '$cliente', 
+                date: 1
+            } 
+        }
+    ]);
     
     try
     {
@@ -43,20 +50,30 @@ exports.getCitasLikeName = async (req, res) => {
     const { name } = req.params;
     const cita = await Cita.aggregate([
         {
-          "$lookup": {
-            "from": "clientes",
-            "localField": "id_client",
-            "foreignField": "_id",
-            "as": "cliente"
-          }
+            $lookup: {
+                "from": "clientes",
+                "localField": "id_client",
+                "foreignField": "_id",
+                "as": "cliente"
+            }
         },
         {
             $match: {
-                "cliente.name": { $regex: name, $options: 'i' } // Case-insensitive search
+                "cliente.name": { 
+                    $regex: name, 
+                    $options: 'i' 
+                }
             }
         },
-        { $project : { _id : 1, id_client : 1, cliente: '$cliente', date: 1} }
-      ])
+        { 
+            $project : { 
+                _id : 1, 
+                id_client : 1, 
+                cliente: '$cliente', 
+                date: 1
+            } 
+        }
+    ]);
     
     try
     {
@@ -92,20 +109,30 @@ exports.getCitasLikeDate = async (req, res) => {
     endOfDay.setHours(23, 59, 59, 999);
     const cita = await Cita.aggregate([
         {
-          "$lookup": {
-            "from": "clientes",
-            "localField": "id_client",
-            "foreignField": "_id",
-            "as": "cliente"
-          }
+            $lookup: {
+                "from": "clientes",
+                "localField": "id_client",
+                "foreignField": "_id",
+                "as": "cliente"
+            }
         },
         {
             $match: {
-                "date": { $gte: startOfDay, $lte: endOfDay }
+                "date": { 
+                    $gte: startOfDay, 
+                    $lte: endOfDay 
+                }
             }
         },
-        { $project : { _id : 1, id_client : 1, cliente: '$cliente', date: 1} }
-      ])
+        { 
+            $project : { 
+                _id : 1, 
+                id_client : 1, 
+                cliente: '$cliente', 
+                date: 1
+            } 
+        }
+    ]);
     
     try
     {
@@ -133,7 +160,7 @@ exports.getCitasLikeDate = async (req, res) => {
 }
 
 exports.addCita = async (req, res) => {
-    const {id_cliente} = req.body;
+    const { id_cliente } = req.body;
     const clienteExist = await Cliente.findOne({ id_cliente });
 
     if (!clienteExist)

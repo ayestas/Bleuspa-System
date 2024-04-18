@@ -26,13 +26,24 @@ function Productos() {
             .get("http://localhost:8000/api/productos")
             .then((response) => response.data)
             .then((data) => {
-                setProductos(data);
-                console.log(data);
+                const changedData = data.map(item => ({
+                    ...item,
+                    expiration_date: formatDate(item.expiration_date)
+                }));
+                setProductos(changedData);
+                console.log(changedData);
             })
             .catch((err) => {
                 console.log('No se encontraron productos.')
             });
     }, []);
+
+    const formatDate = (dateString) => {
+        const date = new Date(dateString);
+        const year = date.getFullYear();
+        const month = String(date.getMonth() + 1).padStart(2, '0');
+        return `${year}-${month}`;
+    };
 
     const columns: GridColDef[] = [
         { field: 'code_product', headerName: 'Código Producto', width: 120 },
@@ -44,11 +55,14 @@ function Productos() {
             field: 'source_price',
             headerName: 'Precio Compra',
             width: 150,
-            valueGetter: (value, row) => {
-                return `${row.source_price}`;
-            },
+            renderCell: (params) => (<span>{params.value.$numberDecimal}</span>)
         },
-        { field: 'sale_price', headerName: 'Precio Venta', width: 150 },
+        { 
+            field: 'sale_price', 
+            headerName: 'Precio Venta', 
+            width: 150,
+            renderCell: (params) => (<span>{params.value.$numberDecimal}</span>)
+        },
 
     ];
 
@@ -75,7 +89,6 @@ function Productos() {
                         noValidate
                         autoComplete="off"
                     >
-                        <TextField id="outlined-basic" label="Código Producto" variant="outlined" sx={{ width: '25ch' }} />
                         <TextField id="outlined-basic" label="Nombre del Producto" variant="outlined" sx={{ width: '60ch' }} />
 
                         <button id='button_acp'>BUSCAR</button>

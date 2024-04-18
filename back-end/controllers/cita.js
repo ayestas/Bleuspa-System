@@ -11,33 +11,30 @@ exports.getCitas = async (req, res) => {
                 "as": "cliente"
             }
         },
-        { 
-            $project: { 
-                _id : 1, 
-                id_client : 1, 
-                cliente: '$cliente', 
+        {
+            $unwind: '$cliente' // Unwind the combinedData array
+        },
+        {
+            $project: {
+                _id: 1,
+                id_client: 1,
+                cliente: '$cliente',
                 date: 1
-            } 
+            }
         }
     ]);
-    
-    try
-    {
-        if (!cita)
-        {
+
+    try {
+        if (!cita) {
             return res.status(400).json({
                 success: false,
                 message: "Esta cita no existe."
             })
         }
-        
-        res.status(201).json({
-            success: true,
-            cita
-        })
+
+        res.json(cita);
     }
-    catch (error)
-    {
+    catch (error) {
         console.log(error);
         res.status(400).json({
             success: false,
@@ -59,39 +56,36 @@ exports.getCitasLikeName = async (req, res) => {
         },
         {
             $match: {
-                "cliente.name": { 
-                    $regex: name, 
-                    $options: 'i' 
+                "cliente.name": {
+                    $regex: name,
+                    $options: 'i'
                 }
             }
         },
-        { 
-            $project : { 
-                _id : 1, 
-                id_client : 1, 
-                cliente: '$cliente', 
+        {
+            $project: {
+                _id: 1,
+                id_client: 1,
+                cliente: '$cliente',
                 date: 1
-            } 
+            }
         }
     ]);
-    
-    try
-    {
-        if (!cita)
-        {
+
+    try {
+        if (!cita) {
             return res.status(400).json({
                 success: false,
                 message: "Esta cita no existe."
             })
         }
-        
+
         res.status(201).json({
             success: true,
             cita
         })
     }
-    catch (error)
-    {
+    catch (error) {
         console.log(error);
         res.status(400).json({
             success: false,
@@ -104,7 +98,7 @@ exports.getCitasLikeDate = async (req, res) => {
     const { date } = req.params;
     const startOfDay = new Date(date);
     startOfDay.setHours(0, 0, 0, 0);
-    
+
     const endOfDay = new Date(date);
     endOfDay.setHours(23, 59, 59, 999);
     const cita = await Cita.aggregate([
@@ -118,39 +112,36 @@ exports.getCitasLikeDate = async (req, res) => {
         },
         {
             $match: {
-                "date": { 
-                    $gte: startOfDay, 
-                    $lte: endOfDay 
+                "date": {
+                    $gte: startOfDay,
+                    $lte: endOfDay
                 }
             }
         },
-        { 
-            $project : { 
-                _id : 1, 
-                id_client : 1, 
-                cliente: '$cliente', 
+        {
+            $project: {
+                _id: 1,
+                id_client: 1,
+                cliente: '$cliente',
                 date: 1
-            } 
+            }
         }
     ]);
-    
-    try
-    {
-        if (!cita)
-        {
+
+    try {
+        if (!cita) {
             return res.status(400).json({
                 success: false,
                 message: "Esta cita no existe."
             })
         }
-        
+
         res.status(201).json({
             success: true,
             cita
         })
     }
-    catch (error)
-    {
+    catch (error) {
         console.log(error);
         res.status(400).json({
             success: false,
@@ -163,24 +154,21 @@ exports.addCita = async (req, res) => {
     const { id_cliente } = req.body;
     const clienteExist = await Cliente.findOne({ id_cliente });
 
-    if (!clienteExist)
-    {
+    if (!clienteExist) {
         return res.status(400).json({
             success: false,
             message: "No existe este cliente para lograr agendar cita."
         })
     }
 
-    try
-    {
+    try {
         const cita = await Cita.create(req.body);
         res.status(201).json({
             success: true,
             cita
         })
     }
-    catch (error)
-    {
+    catch (error) {
         console.log(error);
         res.status(400).json({
             success: false,

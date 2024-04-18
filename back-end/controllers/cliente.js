@@ -13,10 +13,7 @@ exports.getClientes = async (req, res) => {
             })
         }
         
-        res.status(201).json({
-            success: true,
-            cliente
-        })
+        res.json(cliente);
     }
     catch (error)
     {
@@ -46,11 +43,8 @@ exports.getClienteLikeName = async (req, res) => {
                 message: "Este cliente no existe."
             })
         }
-        
-        res.status(201).json({
-            success: true,
-            cliente
-        })
+
+        res.json(cliente);
     }
     catch (error)
     {

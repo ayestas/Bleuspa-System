@@ -1,4 +1,3 @@
-import React from 'react';
 import BarraMenu from './components/BarraSuperior/BarraMenu';
 import BarraInferior from './components/BarraInferior/BarraInferior';
 

@@ -1,58 +1,15 @@
 import './Productos.css'
 
 import { useNavigate } from 'react-router-dom';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { DataGrid, GridColDef } from '@mui/x-data-grid';
 import { Box, Button, Divider, TextField } from '@mui/material';
-
-const columns: GridColDef<(typeof rows)[number]>[] = [
-    { field: 'id', headerName: 'ID', width: 90 },
-    {
-      field: 'firstName',
-      headerName: 'First name',
-      width: 150,
-      editable: true,
-    },
-    {
-      field: 'lastName',
-      headerName: 'Last name',
-      width: 150,
-      editable: true,
-    },
-    {
-      field: 'age',
-      headerName: 'Age',
-      type: 'number',
-      width: 110,
-      editable: true,
-    },
-    {
-      field: 'fullName',
-      headerName: 'Full name',
-      description: 'This column has a value getter and is not sortable.',
-      sortable: false,
-      width: 160,
-      valueGetter: (value, row) => `${row.firstName || ''} ${row.lastName || ''}`,
-    },
-  ];
-  
-  const rows = [
-    { id: 1, lastName: 'Snow', firstName: 'Jon', age: 14 },
-    { id: 2, lastName: 'Lannister', firstName: 'Cersei', age: 31 },
-    { id: 3, lastName: 'Lannister', firstName: 'Jaime', age: 31 },
-    { id: 4, lastName: 'Stark', firstName: 'Arya', age: 11 },
-    { id: 5, lastName: 'Targaryen', firstName: 'Daenerys', age: null },
-    { id: 6, lastName: 'Melisandre', firstName: null, age: 150 },
-    { id: 7, lastName: 'Clifford', firstName: 'Ferrara', age: 44 },
-    { id: 8, lastName: 'Frances', firstName: 'Rossini', age: 36 },
-    { id: 9, lastName: 'Roxie', firstName: 'Harvey', age: 65 },
-  ];
-  
+import axios from 'axios';
 
 function Productos() {
     const navigate = useNavigate();
     const handleClick_AgrProd = () => navigate('/productos/agregarproducto');
-    const handleClick_EdtProd= () => navigate('/productos/editarproducto');
+    const handleClick_EdtProd = () => navigate('/productos/editarproducto');
 
     // State to keep track of selected rows
     const [selectedRows, setSelectedRows] = useState<string[]>([]);
@@ -61,7 +18,40 @@ function Productos() {
     const handleSelectionChange = (selectionModel: any) => {
         setSelectedRows(selectionModel as string[]);
     };
-    
+
+    const [productos, setProductos] = useState([]);
+
+    useEffect(() => {
+        axios
+            .get("http://localhost:8000/api/productos")
+            .then((response) => response.data)
+            .then((data) => {
+                setProductos(data);
+                console.log(data);
+            })
+            .catch((err) => {
+                console.log('No se encontraron productos.')
+            });
+    }, []);
+
+    const columns: GridColDef[] = [
+        { field: 'code_product', headerName: 'Código Producto', width: 120 },
+        { field: 'name', headerName: 'Nombre', width: 250 },
+        { field: 'unit_stock', headerName: '#', width: 20 },
+        { field: 'expiration_date', headerName: 'Fecha de Expiración', width: 200 },
+        { field: 'description', headerName: 'Descripción', width: 200 },
+        {
+            field: 'source_price',
+            headerName: 'Precio Compra',
+            width: 150,
+            valueGetter: (value, row) => {
+                return `${row.source_price}`;
+            },
+        },
+        { field: 'sale_price', headerName: 'Precio Venta', width: 150 },
+
+    ];
+
     return (
         <div style={{ backgroundColor: '#f2f2f2' }}>
             <h1 id='Titulo'>
@@ -94,8 +84,9 @@ function Productos() {
 
                 <div style={{ height: 400, width: '100%' }}>
                     <DataGrid
-                        rows={rows}
+                        rows={productos}
                         columns={columns}
+                        getRowId={(row) => row._id}
                         initialState={{
                             pagination: {
                                 paginationModel: { page: 0, pageSize: 5 },

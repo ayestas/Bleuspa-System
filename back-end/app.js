@@ -4,6 +4,7 @@ require('dotenv').config();
 const mongoose = require('mongoose');
 const bodyParser = require('body-parser');
 const morgan = require('morgan');
+const cors = require("cors");
 
 //Import ROUTES
 const clienteRoutes = require('./routes/clientes');
@@ -22,6 +23,7 @@ mongoose.connect(process.env.DATABASE, {
 .catch((err) => console.log(err));
 
 //Middleware
+app.use(cors({ origin: true, credentials: true }));
 app.use(morgan('dev'));
 app.use(bodyParser.json());
 

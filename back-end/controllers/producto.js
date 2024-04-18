@@ -13,10 +13,7 @@ exports.getProductos = async (req, res) => {
             })
         }
         
-        res.status(201).json({
-            success: true,
-            producto
-        })
+        res.json(producto);
     }
     catch (error)
     {

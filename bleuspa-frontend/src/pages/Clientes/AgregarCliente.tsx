@@ -1,8 +1,9 @@
 import './Clientes.css'
 
-import TextField from '@mui/material/TextField';
 import { IconButton, SvgIcon, SvgIconProps } from '@mui/material';
 import { useNavigate } from 'react-router-dom';
+import { useState } from "react";
+import axios from 'axios';
 
 function KeyboardReturnIcon(props: SvgIconProps) {
     return (
@@ -16,6 +17,36 @@ function AgregarCliente() {
     const navigate = useNavigate();
     const handleClick_Clt = () => navigate('/clientes');
 
+    const [cliente, setCliente] = useState({
+        name: "",
+        address: "",
+        phone: ""
+    });
+
+    const onChange = (e) => {
+        setCliente({
+            ...cliente,
+            [e.target.name]: e.target.value
+        });
+    }
+
+    const onSubmit = (e) => {
+        e.preventDefault();
+        axios
+            .post("http://localhost:8000/api/addCliente", cliente)
+            .then((res) => {
+                setCliente({
+                    name: "",
+                    address: "",
+                    phone: ""
+                });
+                navigate("/");
+            })
+            .catch((err) => {
+                console.log("No se pudo agregar el cliente."+err);
+            });
+    }
+
     return (
         <div style={{ backgroundColor: '#f2f2f2' }}>
             <h1 id='Titulo'>
@@ -23,28 +54,27 @@ function AgregarCliente() {
             </h1>
 
             <div id='Box' >
-                <div id='textFields'>
-                    <TextField disabled id='outlined-basic' label='Id Cliente' variant='outlined' sx={{ width: '25ch' }}></TextField>
-                </div>
-                <div id='textFields'>
-                    <TextField id='outlined-basic' label='Nombre Completo' variant='outlined' sx={{ width: '60ch' }}></TextField>
-                </div>
-                <div id='textFields'>
-                    <TextField id='outlined-basic' label='Dirección' variant='outlined' sx={{ width: '60ch' }}></TextField>
-                </div>
-                <div id='textFields'>
-                    <TextField id='outlined-basic' label='Número de Teléfono' variant='outlined' sx={{ width: '60ch' }}></TextField>
-                </div>
+                <form onSubmit={onSubmit}>
+                    <div id='textFields'>
+                        <input type="text" placeholder='Nombre Completo' name="name" value={cliente.name} onChange={onChange} ></input>
+                    </div>
+                    <div id='textFields'>
+                        <input type="text" placeholder='Dirección' name="address" style={{ width: '60ch' }} value={cliente.address} onChange={onChange}></input>
+                    </div>
+                    <div id='textFields'>
+                        <input type="text" placeholder='Teléfono' name="phone" style={{ width: '60ch' }} value={cliente.phone} onChange={onChange}></input>
+                    </div>
 
-                <div>
-                    <button id='button_reg' onClick={handleClick_Clt} >
-                        <IconButton aria-label="fingerprint" color="secondary">
-                            <KeyboardReturnIcon sx={{ color: 'white', fontSize: '1.2vw' }} />
-                        </IconButton>
-                        REGRESAR
-                    </button>
-                    <button id='button_acp'>AGREGAR CLIENTE</button>
-                </div>
+                    <div>
+                        <button id='button_reg' onClick={handleClick_Clt} >
+                            <IconButton aria-label="fingerprint" color="secondary">
+                                <KeyboardReturnIcon sx={{ color: 'white', fontSize: '1.2vw' }} />
+                            </IconButton>
+                            REGRESAR
+                        </button>
+                        <button type="submit" id='button_acp'>AGREGAR CLIENTE</button>
+                    </div>
+                </form>
             </div>
         </div>
     );

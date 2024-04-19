@@ -12,6 +12,9 @@ exports.getOrdenes = async (req, res) => {
           }
         },
         {
+            $unwind: '$cliente' // Unwind the combinedData array
+        },
+        {
             $lookup: {
                 "from": "detalleordens",
                 "localField": "_id",
@@ -19,13 +22,28 @@ exports.getOrdenes = async (req, res) => {
                 "as": "detalles"
             }
         },
+        {
+            $unwind: '$detalles' // Unwind the combinedData array
+        },
+        {
+            $lookup: {
+                "from": "productos",
+                "localField": "detalles.id_product",
+                "foreignField": "_id",
+                "as": "producto"
+            }
+        },
+        {
+            $unwind: '$producto' // Unwind the combinedData array
+        },
         { 
             $project : { 
                 _id : 1, 
                 id_client : 1, 
                 cliente: '$cliente', 
                 date: 1,
-                detalles: '$detalles'
+                detalles: '$detalles',
+                producto: '$producto'
             } 
         }
     ]);
@@ -40,10 +58,7 @@ exports.getOrdenes = async (req, res) => {
             })
         }
         
-        res.status(201).json({
-            success: true,
-            orden
-        })
+        res.json(orden);
     }
     catch (error)
     {

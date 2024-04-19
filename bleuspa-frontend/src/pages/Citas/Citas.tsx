@@ -52,7 +52,7 @@ function Citas() {
         const minutes = String(date.getMinutes()).padStart(2, '0');
         const ampm = date.getUTCHours() >= 12 ? 'pm' : 'am'; // Determine if it's AM or PM
         return `${year}-${month}-${day} | ${hours}:${minutes} ${ampm}`;
-      };
+    };
 
     return (
         <div style={{ backgroundColor: '#f2f2f2' }}>

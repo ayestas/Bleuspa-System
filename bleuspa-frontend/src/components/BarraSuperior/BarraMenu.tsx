@@ -24,8 +24,8 @@ const BarraMenu = () => {
         <AppBar style={{ background: '#5095BF', height: '4vw' }}>
             <Toolbar>
                 <Stack className='stack' direction='row' spacing='6vw' justifyContent="center" alignItems="center" margin='auto' marginTop='0.2vw'>
-                    <IconButton aria-label="fingerprint" color="secondary">
-                        <HomeIcon sx={{ color: 'white', fontSize: '2.2vw' }} onClick={handleClick_Pri} />
+                    <IconButton aria-label="fingerprint" color="secondary" onClick={handleClick_Pri}>
+                        <HomeIcon sx={{ color: 'white', fontSize: '2.2vw' }} />
                     </IconButton>
                     <Button sx={{
                         color: 'white',

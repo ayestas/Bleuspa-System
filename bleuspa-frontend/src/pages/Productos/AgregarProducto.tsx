@@ -1,7 +1,7 @@
 import './Productos'
 
 import { DatePicker } from 'rsuite';
-import { IconButton, SvgIcon, SvgIconProps, TextField } from '@mui/material';
+import { SvgIcon, SvgIconProps } from '@mui/material';
 import { useNavigate } from 'react-router-dom';
 
 function KeyboardReturnIcon(props: SvgIconProps) {
@@ -24,36 +24,46 @@ function AgregarProducto() {
 
             <div id='Box' >
                 <div>
-                    <div id='textFields'>
-                        <TextField disabled={true} id="outlined-basic" label="Código" variant="outlined" sx={{ width: '25ch', marginRight: '10px' }} ></TextField>
-                        <DatePicker label={'Fecha de Vencimiento: '} style={{ marginTop: '7px', width: '345px' }} format='dd-MM-yyyy' ></DatePicker>
+                    <div id='textFieldsProducto'>
+                        <input type="text" id="textfieldP" placeholder='Nombre del Producto' name='name' style={{ width: '62ch', marginRight: '15px' }} ></input>
+                        <label id='textfieldLabel'>Nombre del Producto</label>
                     </div>
-                    <div id='textFields'>
-                        <TextField id="outlined-basic" label="Nombre del Producto" variant="outlined" sx={{ width: '55ch', marginRight: '15px' }} ></TextField>
-                        <TextField id="outlined-basic" label="Cantidad" variant="outlined" sx={{ width: '15ch' }} ></TextField>
+                    <div style={{ display: 'flex' }}>
+                        <div>
+                            <DatePicker label={'Fecha de Vencimiento: '} style={{ marginRight: '10px', width: '345px' }} format='MMM-yyyy' ></DatePicker>
+                        </div>
+                        <div id='textFieldsProducto'>
+                            <input type="text" id="textfieldP" placeholder='Cantidad' name='quantity' style={{ width: '15ch' }} ></input>
+                            <label id='textfieldLabel'>Cantidad</label>
+                        </div>
                     </div>
-                    <div id='textFields'>
-                        <TextField
-                            id="outlined-multiline-static"
-                            label="Descripción del Producto"
-                            multiline
-                            rows={4}
-                            sx={{
-                                width: '72ch'
-                            }}
-                        />
+                    <div id='textFieldsProducto'>
+                        <textarea id="textfieldP" placeholder='Descripción' name="description" style={{ width: '62ch' }} />
+                        <label id='textfieldLabel'>Descripción</label>
                     </div>
-                    <div id='textFields'>
-                        <TextField id="outlined-basic" label="Precio Compra" variant="outlined" sx={{ width: '35ch', marginRight: '15px' }} ></TextField>
-                        <TextField id="outlined-basic" label="Precio Venta" variant="outlined" sx={{ width: '35ch' }} ></TextField>
+                    <div style={{ display: 'flex' }}>
+                        <div id='textFieldsProducto' style={{ float: 'left' }}>
+                            <input id="textfieldP" placeholder='Precio Compra' name='source_price' style={{ width: '27ch', marginRight: '18px' }} ></input>
+                            <label id='textfieldLabel'>Precio Compra</label>
+                        </div>
+                        <div id='textFieldsProducto' style={{ float: 'right' }}>
+                            <input id="textfieldP" placeholder='Precio Venta' name='sale_price' style={{ width: '27ch' }} ></input>
+                            <label id='textfieldLabel'>Precio Venta</label>
+                        </div>
                     </div>
 
                 </div>
                 <div>
                     <button id='button_reg' onClick={handleClick_Prod} >
-                        <IconButton aria-label="fingerprint" color="secondary">
-                            <KeyboardReturnIcon sx={{ color: 'white', fontSize: '1.2vw' }} />
-                        </IconButton>
+                        <KeyboardReturnIcon 
+                            sx={{ 
+                                color: 'white', 
+                                fontSize: '25px',
+                                display: 'inline',
+                                verticalAlign: 'bottom',
+                                marginRight: '4px'
+                            }} 
+                        /> 
                         REGRESAR
                     </button>
                     <button id='button_acp'>AGREGAR PRODUCTO</button>

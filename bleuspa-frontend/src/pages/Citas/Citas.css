@@ -75,3 +75,61 @@
     cursor: pointer;
     font-weight: 700;
 }
+
+#textFieldsCitas {
+    margin-bottom: 10px;
+    position: relative;
+}
+
+#textfieldCita {
+    padding: 8px 20px;
+    background-color: transparent;
+    border: 1px solid #d6d6d6;
+    border-radius: 6px;
+    height: 30px;
+}
+
+#textFieldsCitas input::placeholder, #textFieldsCitas textarea::placeholder {
+    color: transparent;
+    padding: 1px;
+}
+
+#textFieldsCitas input:focus, 
+#textFieldsCitas textarea:focus {
+    border: 1px solid #5095BF;
+}
+
+#textFieldsCitas #textfieldLabel {
+    position: absolute;
+    top: 12px;
+    left: 0;
+    padding: 0 10px;
+    transition: 0.15s all ease;
+}
+
+#textFieldsCitas input:focus + #textfieldLabel,
+#textFieldsCitas textarea:focus + #textfieldLabel,
+#textFieldsCitas input:not(:placeholder-shown) + #textfieldLabel,
+#textFieldsCitas textarea:not(:placeholder-shown) + #textfieldLabel {
+    transform: translate(6px, -20px);
+    background-color: #ffffff;
+    color: #5095BF;
+    font-size: 12px;
+}
+
+textarea:focus, input:focus{
+    outline: none;
+}
+
+#textfieldCita:hover {
+    border: 1px solid #5095BF;
+}
+
+.rs-input-group, .rs-input-group-inside {
+    height: 48px;
+    border: 1px solid #d6d6d6;
+}
+
+.rs-picker-label, .rs-input-group-addon {
+    margin-left: 8px;
+}

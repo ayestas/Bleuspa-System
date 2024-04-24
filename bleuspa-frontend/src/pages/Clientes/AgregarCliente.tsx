@@ -56,11 +56,11 @@ function AgregarCliente() {
             <div id='Box' >
                 <form onSubmit={onSubmit}>
                     <div id='textFieldsCliente'>
-                        <input type="text" id='textfieldC' placeholder='Nombre Completo' name="name" value={cliente.name} onChange={onChange} ></input>
+                        <input type="text" id='textfieldC' placeholder='Nombre Completo' name="name" style={{ width: '45ch' }} value={cliente.name} onChange={onChange} ></input>
                         <label id='textfieldLabel'>Nombre Completo</label>
                     </div>
                     <div id='textFieldsCliente'>
-                        <input type="text" id='textfieldC' placeholder='Dirección' name="address" style={{ width: '60ch' }} value={cliente.address} onChange={onChange}></input>
+                        <textarea id='textfieldC' placeholder='Dirección' name="address" style={{ width: '60ch' }} value={cliente.address} onChange={onChange}></textarea>
                         <label id='textfieldLabel'>Dirección</label>
                     </div>
                     <div id='textFieldsCliente'>

@@ -1,7 +1,7 @@
 import './Citas.css'
 
 import { DatePicker } from 'rsuite';
-import { TextField, IconButton, SvgIcon, SvgIconProps } from '@mui/material';
+import { IconButton, SvgIcon, SvgIconProps } from '@mui/material';
 import { useNavigate } from 'react-router-dom';
 
 function KeyboardReturnIcon(props: SvgIconProps) {
@@ -22,34 +22,41 @@ function AgendarCita() {
                 AGENDAR CITA
             </h1>
             <div id='Box'>
-                <div id='textFields'>
-                    <TextField disabled id='outlined-basic' label='Id Cita' variant='outlined' sx={{ width: '25ch' }}></TextField>
+                <div id='textFieldsCitas'>
+                    <input id='textfieldCita'  placeholder='Nombre del Cliente' name='name' style={{ width: '60ch', marginRight: '20px', }}></input>
+                    <label id='textfieldLabel'>Nombre del Cliente</label>
                 </div>
-
-                <div id='textFields'>
-                    <TextField id='outlined-basic' label='Nombre del Cliente' variant='outlined' sx={{ width: '60ch', marginRight: '20px', }}></TextField>
-                    <DatePicker style={{ marginTop: '7px' }} format='dd-MM-yyyy' ></DatePicker>
-                </div>
-                <div id='textFields'>
-                    <TextField
-                        id="outlined-multiline-static"
-                        label="Descripción de Cita"
-                        multiline
-                        rows={4}
-                        sx={{
-                            width: '90ch'
+                <div id='textFieldsCitas'>
+                    <textarea
+                        id='textfieldCita'
+                        placeholder='Descripción de Cita' 
+                        name="description"
+                        style={{
+                            width: '60ch'
                         }}
                     />
+                    <label id='textfieldLabel'>Descripción de Cita</label>
                 </div>
-                <button id='button_reg' style={{ width: '48.5ch' }}>
+                <div>
+                    <DatePicker label={'Fecha de Cita:'} style={{ marginBottom: '10px' }} format='dd-MM-yyyy' ></DatePicker>
+                </div>
+
+
+                <button id='button_reg' style={{ width: '47ch' }}>
                     Crear Formulario del Cliente
                 </button>
 
                 <div>
-                    <button id='button_reg' onClick={handleClick_Cit} >
-                        <IconButton aria-label="fingerprint" color="secondary">
-                            <KeyboardReturnIcon sx={{ color: 'white', fontSize: '1.2vw' }} />
-                        </IconButton>
+                <button id='button_reg' onClick={handleClick_Cit} >
+                        <KeyboardReturnIcon 
+                            sx={{ 
+                                color: 'white', 
+                                fontSize: '25px',
+                                display: 'inline',
+                                verticalAlign: 'bottom',
+                                marginRight: '4px'
+                            }} 
+                        /> 
                         REGRESAR
                     </button>
                     <button id='button_acp'>AGENDAR CITA</button>

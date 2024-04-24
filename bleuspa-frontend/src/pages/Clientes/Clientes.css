@@ -92,7 +92,7 @@
 }
 
 #textFieldsCliente {
-    margin-bottom: 20px;
+    margin-bottom: 10px;
     position: relative;
 }
 
@@ -104,13 +104,13 @@
     height: 30px;
 }
 
-#textFieldsCliente input::placeholder {
+#textFieldsCliente input::placeholder, #textFieldsCliente textarea::placeholder {
     color: transparent;
     padding: 1px;
 }
 
-#textFieldsCliente input:focus {
-    border: 1px solid #974343;
+#textFieldsCliente input:focus, #textFieldsCliente textarea:focus {
+    border: 1px solid #5095BF;
 }
 
 #textFieldsCliente #textfieldLabel {
@@ -122,8 +122,15 @@
 }
 
 #textFieldsCliente input:focus + #textfieldLabel,
-#textFieldsCliente input:not(:placeholder-shown) + #textfieldLabel {
+#textFieldsCliente textarea:focus + #textfieldLabel,
+#textFieldsCliente input:not(:placeholder-shown) + #textfieldLabel,
+#textFieldsCliente textarea:not(:placeholder-shown) + #textfieldLabel {
     transform: translate(6px, -20px);
     background-color: #ffffff;
+    color: #5095BF;
     font-size: 12px;
+}
+
+textarea:focus, input:focus{
+    outline: none;
 }

@@ -96,58 +96,24 @@
 }
 
 #button_Del {
+    background-color: transparent;
+
     margin-top: 10px;
-    margin-right: 1vw;
-    margin-bottom: 10px;
 
-    border: 0 #e44242;
-    border-radius: 5px;
-
-    width: 170px;
-    height: 50px;
-
-    background: #e44242;
-
-    font-size: small;
-}
-
-#button_Del:hover {
-    background: #ff7d7d;
-    color: #660707;
-
-    cursor: pointer;
-}
-
-#button_Del:active {
-    background: #a74040;
-    color: #ff7d7d;
-
-    font-weight: 700;
-}
-
-#button_Del:enabled {
-    color: aliceblue;
-}
-
-#button_Del:disabled {
-    background: #c26060;
-    color: #b68f8f;
+    width: 30px;
+    height: 30px;
 }
 
 #button_Agr {
     margin-top: 10px;
-    margin-right: 1vw;
-    margin-bottom: 10px;
-
+    margin-right: 10px;
     border: 0 #50BFB4;
     border-radius: 5px;
 
-    width: 170px;
-    height: 50px;
+    width: 30px;
+    height: 30px;
 
     background: #50BFB4;
-
-    font-size: small;
 }
 
 #button_Agr:hover {
@@ -168,7 +134,70 @@
     color: aliceblue;
 }
 
-#outlined-basic {
-    width: 300px;
-    height: 20px;
+#textfieldsOrdenes {
+    margin-bottom: 10px;
+    position: relative;
 }
+
+#textfieldOrden {
+    padding: 8px 20px;
+    background-color: transparent;
+    border: 1px solid #d6d6d6;
+    border-radius: 6px;
+    height: 30px;
+}
+
+#selectOrden {
+    padding: 8px 20px;
+    background-color: transparent;
+    border: 1px solid #d6d6d6;
+    border-radius: 6px;
+    height: 48px;
+    margin-right: 10px;
+}
+
+#textfieldsOrdenes input::placeholder, #textfieldsOrdenes textarea::placeholder {
+    color: transparent;
+    padding: 1px;
+}
+
+#textfieldsOrdenes input:focus, 
+#textfieldsOrdenes textarea:focus {
+    border: 1px solid #5095BF;
+}
+
+#textfieldsOrdenes #textfieldLabel {
+    position: absolute;
+    top: 12px;
+    left: 0;
+    padding: 0 10px;
+    transition: 0.15s all ease;
+}
+
+#textfieldsOrdenes input:focus + #textfieldLabel,
+#textfieldsOrdenes textarea:focus + #textfieldLabel,
+#textfieldsOrdenes input:not(:placeholder-shown) + #textfieldLabel,
+#textfieldsOrdenes textarea:not(:placeholder-shown) + #textfieldLabel {
+    transform: translate(6px, -20px);
+    background-color: #ffffff;
+    color: #5095BF;
+    font-size: 12px;
+}
+
+textarea:focus, input:focus{
+    outline: none;
+}
+
+#textfieldOrden:hover, #selectOrden:hover {
+    border: 1px solid #5095BF;
+}
+
+.rs-input-group, .rs-input-group-inside {
+    height: 48px;
+    border: 1px solid #d6d6d6;
+}
+
+.rs-picker-label, .rs-input-group-addon {
+    margin-left: 8px;
+}
+

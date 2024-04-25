@@ -1,6 +1,6 @@
 import './Clientes.css'
 
-import { IconButton, SvgIcon, SvgIconProps } from '@mui/material';
+import { SvgIcon, SvgIconProps } from '@mui/material';
 import { useNavigate } from 'react-router-dom';
 import { useState } from "react";
 import axios from 'axios';
@@ -40,10 +40,11 @@ function AgregarCliente() {
                     address: "",
                     phone: ""
                 });
-                navigate("/");
+                alert("Cliente creado exitosamente!")
+                navigate("/clientes");
             })
             .catch((err) => {
-                console.log("No se pudo agregar el cliente."+err);
+                console.log("No se pudo agregar el cliente." + err);
             });
     }
 
@@ -70,9 +71,15 @@ function AgregarCliente() {
 
                     <div>
                         <button id='button_reg' onClick={handleClick_Clt} >
-                            <IconButton aria-label="fingerprint" color="secondary">
-                                <KeyboardReturnIcon sx={{ color: 'white', fontSize: '1.2vw' }} />
-                            </IconButton>
+                            <KeyboardReturnIcon
+                                sx={{
+                                    color: 'white',
+                                    fontSize: '25px',
+                                    display: 'inline',
+                                    verticalAlign: 'bottom',
+                                    marginRight: '4px'
+                                }}
+                            />
                             REGRESAR
                         </button>
                         <button type="submit" id='button_acp'>AGREGAR CLIENTE</button>

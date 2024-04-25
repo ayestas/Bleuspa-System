@@ -1,55 +1,65 @@
 import './Ordenes.css'
 
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import DateRPicker from '../../components/Calendar/DateRangePicker';
 import { DatePicker } from 'rsuite';
-import { Button, Checkbox, Divider, FormControlLabel, IconButton, SvgIcon, SvgIconProps, TextField } from '@mui/material';
+import { Checkbox, Divider, FormControlLabel, SvgIcon, SvgIconProps, TextField } from '@mui/material';
 import { DataGrid, GridColDef } from '@mui/x-data-grid';
 import { useNavigate } from 'react-router-dom';
+import axios from 'axios';
 
-const columns: GridColDef<(typeof rows)[number]>[] = [
+const columns: GridColDef[] = [
     { field: 'id', headerName: 'ID', width: 90 },
     {
-      field: 'firstName',
-      headerName: 'First name',
-      width: 150,
-      editable: true,
+        field: 'firstName',
+        headerName: 'First name',
+        width: 150,
+        editable: true,
     },
     {
-      field: 'lastName',
-      headerName: 'Last name',
-      width: 150,
-      editable: true,
+        field: 'lastName',
+        headerName: 'Last name',
+        width: 150,
+        editable: true,
     },
     {
-      field: 'age',
-      headerName: 'Age',
-      type: 'number',
-      width: 110,
-      editable: true,
+        field: 'age',
+        headerName: 'Age',
+        type: 'number',
+        width: 110,
+        editable: true,
     },
     {
-      field: 'fullName',
-      headerName: 'Full name',
-      description: 'This column has a value getter and is not sortable.',
-      sortable: false,
-      width: 160,
-      valueGetter: (value, row) => `${row.firstName || ''} ${row.lastName || ''}`,
-    },
-  ];
-  
-  const rows = [
+        field: '   ', width: 80, sortable: false, filterable: false, renderCell: (params) => {
+            return (
+                <button id='button_Del' style={{ display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                    <KeyboardClearIcon
+
+                        sx={[
+                            {
+                                '&': {
+                                    color: '#808080',
+                                    backgroundColor: 'transparent'
+                                }
+                            },
+                            {
+                                '&:hover': {
+                                    color: '#e44242'
+                                },
+                            },
+                        ]}
+                    />
+                </button>
+            );
+        }
+    }
+];
+
+const rows = [
     { id: 1, lastName: 'Snow', firstName: 'Jon', age: 14 },
-    { id: 2, lastName: 'Lannister', firstName: 'Cersei', age: 31 },
-    { id: 3, lastName: 'Lannister', firstName: 'Jaime', age: 31 },
-    { id: 4, lastName: 'Stark', firstName: 'Arya', age: 11 },
-    { id: 5, lastName: 'Targaryen', firstName: 'Daenerys', age: null },
-    { id: 6, lastName: 'Melisandre', firstName: null, age: 150 },
-    { id: 7, lastName: 'Clifford', firstName: 'Ferrara', age: 44 },
-    { id: 8, lastName: 'Frances', firstName: 'Rossini', age: 36 },
-    { id: 9, lastName: 'Roxie', firstName: 'Harvey', age: 65 },
-  ];
-  
+    { id: 1, lastName: 'Snow', firstName: 'Jon', age: 14 },
+    { id: 1, lastName: 'Snow', firstName: 'Jon', age: 14 },
+];
 
 function KeyboardReturnIcon(props: SvgIconProps) {
     return (
@@ -59,14 +69,89 @@ function KeyboardReturnIcon(props: SvgIconProps) {
     );
 }
 
+function KeyboardAddIcon(props: SvgIconProps) {
+    return (
+        <SvgIcon {...props}>
+            <path d="M19 13h-6v6h-2v-6H5v-2h6V5h2v6h6z" />
+        </SvgIcon>
+    );
+}
+
+function KeyboardClearIcon(props: SvgIconProps) {
+    return (
+        <SvgIcon {...props}>
+            <path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z" />
+        </SvgIcon>
+    );
+}
+
 function AgregarOrden() {
     const [checked, setChecked] = React.useState(false);
     const navigate = useNavigate();
     const handleClick_Ord = () => navigate('/ordenes');
 
+    const [orden, setOrden] = useState({
+        id_client: "",
+        date: new Date()
+    });
+
+    const [detalleOrden, setDetalleOrden] = useState({
+        id_order: "",
+        id_product: "",
+        price: "",
+        quantity: "",
+    });
+
+    const [clientes, setClientes] = useState([]);
+    const [productos, setProductos] = useState([]);
+
+    useEffect(() => {
+        axios
+            .get("http://localhost:8000/api/clientes")
+            .then((response) => response.data)
+            .then((data) => {
+                setClientes(data);
+            })
+            .catch((err) => {
+                console.log('No se encontraron clientes.')
+            });
+        axios
+            .get("http://localhost:8000/api/productos")
+            .then((response) => response.data)
+            .then((data) => {
+                setProductos(data);
+            })
+            .catch((err) => {
+                console.log('No se encontraron productos.')
+            });
+    }, []);
+
     function handleChange(e) {
         setChecked(e.target.checked);
     }
+
+    const onChangeO = (e) => {
+        setOrden({
+            ...orden,
+            [e.target.name]: e.target.value
+        });
+        console.log(orden);
+    }
+
+    const onChangeD = (e) => {
+        setDetalleOrden({
+            ...detalleOrden,
+            [e.target.name]: e.target.value
+        });
+        console.log(detalleOrden);
+    }
+
+    const handleDateChange = (date) => {
+        setOrden({
+            ...orden,
+            date: date
+        });
+    };
 
     return (
         <div style={{ backgroundColor: '#f2f2f2' }}>
@@ -74,56 +159,83 @@ function AgregarOrden() {
                 AGREGAR ORDEN
             </h1>
             <div id='Box'>
-                <div id='textFields'>
-                    <TextField disabled id='outlined-basic' label='Id Orden' variant='outlined' sx={{ width: '25ch' }}></TextField>
-                </div>
+                <form action="">
+                    <div style={{ display: 'flex' }}>
+                        <div id='textfieldsOrdenes'>
+                            <select id='selectOrden' name="id_client" value={orden.id_client} onChange={onChangeO} style={{ width: '65.5ch' }}>
+                                <option value="" style={{ fontStyle: 'italic' }}>--Seleccione un Cliente--</option>
+                                {clientes.map((cliente) => (
+                                    <option key={cliente._id} value={cliente._id}>{cliente.name}</option>
+                                ))}
+                            </select>
+                        </div>
+                        <DatePicker label={'Fecha de Registro:'} style={{}} format='dd-MM-yyyy' ></DatePicker>
+                    </div>
 
-                <div id='textFields'>
-                    <TextField id='outlined-basic' label='Nombre del Cliente' variant='outlined' sx={{ width: '60ch', marginRight: '20px', }}></TextField>
-                    <DatePicker style={{ marginTop: '7px' }} format='dd-MM-yyyy' ></DatePicker>
-                </div>
+                    <Divider style={{ marginBottom: '15px' }}></Divider>
 
-                <Divider style={{ marginBottom: '10px' }}></Divider>
+                    <div className='productos'>
+                        <div id='textfieldsOrdenes'>
+                            <select id='selectOrden' name="id_product" value={detalleOrden.id_product} onChange={onChangeD} style={{ width: '45ch' }}>
+                                <option value="" style={{ fontStyle: 'italic' }}>--Seleccione un Producto--</option>
+                                {productos.map((producto) => (
+                                    <option key={producto._id} value={producto._id}>{producto.name}</option>
+                                ))}
+                            </select>
+                        </div>
+                        <div id='textfieldsOrdenes'>
+                            <input id='textfieldOrden' placeholder='Cantidad' style={{ width: '12ch', marginRight: '20px' }}></input>
+                            <label id='textfieldLabel'>Cantidad</label>
+                        </div>
 
-                <div className='productos'>
-                    <div><TextField id='outlined-basic' label='Producto' variant='outlined' sx={{ width: '60ch', marginRight: '20px', marginTop: '10px' }}></TextField></div>
-                    <div id='cantidad'><TextField id='outlined-basic' label='Cantidad' variant='outlined' sx={{ width: '12ch', marginRight: '20px', marginTop: '10px' }}></TextField></div>
+                        <FormControlLabel control={<Checkbox onChange={handleChange} />} label="Prestado" />
+                        {checked ? (
+                            <div style={{ marginRight: '10px' }}><DateRPicker></DateRPicker> </div>
+                        ) : (
+                            <div> </div>
+                        )}
 
-                    <FormControlLabel control={<Checkbox onChange={handleChange} />} label="Prestado" />
-                    {checked ? (
-                        <div style={{ marginRight: '10px' }}><DateRPicker></DateRPicker> </div>
-                    ) : (
-                        <div> </div>
-                    )}
+                        <button id='button_Agr' style={{ display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                            <KeyboardAddIcon
+                                sx={{
+                                    color: 'white',
+                                    fontSize: '25px'
+                                }}
+                            />
+                        </button>
+                    </div>
 
-                    <Button id='button'>Agregar Producto</Button>
-                </div>
+                    <div style={{ height: 300, width: '100%' }}>
+                        <DataGrid
+                            rows={rows}
+                            columns={columns}
+                            initialState={{
+                                pagination: {
+                                    paginationModel: { page: 0, pageSize: 5 },
+                                },
+                            }}
+                            pageSizeOptions={[5, 10]}
+                            checkboxSelection
 
-                <div style={{ height: 300, width: '100%' }}>
-                    <DataGrid
-                        rows={rows}
-                        columns={columns}
-                        initialState={{
-                            pagination: {
-                                paginationModel: { page: 0, pageSize: 5 },
-                            },
-                        }}
-                        pageSizeOptions={[5, 10]}
-                        checkboxSelection
+                        />
+                    </div>
 
-                    />
-                </div>
-
-                <div>
-                    <button id='button_reg' onClick={handleClick_Ord} >
-                        <IconButton aria-label="fingerprint" color="secondary">
-                            <KeyboardReturnIcon sx={{ color: 'white', fontSize: '1.2vw' }} />
-                        </IconButton>
-                        REGRESAR
-                    </button>
-                    <button id='button_acp'>AGREGAR ORDEN</button>
-                </div>
-
+                    <div>
+                        <button id='button_reg' onClick={handleClick_Ord} >
+                            <KeyboardReturnIcon
+                                sx={{
+                                    color: 'white',
+                                    fontSize: '25px',
+                                    display: 'inline',
+                                    verticalAlign: 'bottom',
+                                    marginRight: '4px'
+                                }}
+                            />
+                            REGRESAR
+                        </button>
+                        <button id='button_acp'>AGREGAR ORDEN</button>
+                    </div>
+                </form>
             </div>
         </div>
     );

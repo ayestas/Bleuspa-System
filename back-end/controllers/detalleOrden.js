@@ -23,7 +23,8 @@ exports.getDetallesOrden = async (req, res) => {
                 id_order : 1, 
                 price : 1, 
                 quantity : 1, 
-                status : 1, 
+                status : 1,
+                loan_date: 1, 
                 return_date : 1, 
                 producto: '$producto'
             } 
@@ -77,6 +78,7 @@ exports.getDetallesOrdenByOrderId = async (req, res) => {
                     price : 1, 
                     quantity : 1, 
                     status : 1, 
+                    loan_date: 1,
                     return_date : 1, 
                     producto: '$producto'
                 } 

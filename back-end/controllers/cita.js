@@ -19,7 +19,8 @@ exports.getCitas = async (req, res) => {
                 _id: 1,
                 id_client: 1,
                 cliente: '$cliente',
-                date: 1
+                date: 1, 
+                description: 1
             }
         }
     ]);

@@ -10,8 +10,9 @@ const DateRPicker = () => {
                 format="dd-MM-yyyy"
                 character=" || "
                 showHeader={false}
+                label={'Préstamo y Retorno:'}
                 style={{
-                    marginTop: '15px'
+                    
                 }}>
 
             </DateRangePicker>

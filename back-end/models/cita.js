@@ -10,7 +10,12 @@ const citaSchema = new mongoose.Schema({
     date: {
         type: Date,
         required : [true, 'Fecha de cita es requerida.'],
-    }
+    },
+    description: {
+        type: String,
+        required : [true, 'Descripción de cita es requerida.'],
+        maxlength: 250
+    },
 })
 
 module.exports = mongoose.model("Cita", citaSchema);

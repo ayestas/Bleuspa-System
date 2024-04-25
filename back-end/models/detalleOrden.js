@@ -24,6 +24,9 @@ const detalleOrdenSchema = new mongoose.Schema({
     status: {
         type: String
     },
+    loan_date: {
+        type: Date
+    },
     return_date: {
         type: Date
     }

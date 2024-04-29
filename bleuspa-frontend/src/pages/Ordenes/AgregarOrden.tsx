@@ -43,16 +43,16 @@ function AgregarOrden() {
 
     const columns: GridColDef[] = [
         {
-            field: 'name', headerName: 'Producto', width: 250, renderCell: (params) => {
+            field: 'product', headerName: 'Producto', width: 300, renderCell: (params) => {
                 const product = productos.find((producto) => producto._id === params.row.id_product);
                 return product ? product.name : '';
             }
         },
-        { field: 'quantity', headerName: 'Cantidad', width: 100, editable: true },
-        { field: 'status', headerName: 'Estado de Prestamo', width: 200 },
-        { field: 'price', headerName: 'Precio', width: 200 },
-        { field: 'loan_date', headerName: 'Fecha Prestado', width: 200 },
-        { field: 'return_date', headerName: 'Fecha Prestado', width: 200 },
+        { field: 'price', headerName: 'Precio', width: 120, renderCell: (params) => params.row.price },
+        { field: 'quantity', headerName: 'Cantidad', width: 120, renderCell: (params) => params.row.quantity },
+        { field: 'status', headerName: 'Estado', width: 120, renderCell: (params) => params.row.status },
+        { field: 'loan_date', headerName: 'Fecha Prestado', width: 200, renderCell: (params) => params.row.loan_date },
+        { field: 'return_date', headerName: 'Fecha Devolución', width: 200, renderCell: (params) => params.row.return_date },
         {
             field: '   ', width: 80, sortable: false, filterable: false,
             renderCell: (params) => {
@@ -78,14 +78,7 @@ function AgregarOrden() {
         }
     ];
 
-    const [orden, setOrden] = useState({
-        _id: "",
-        id_client: "",
-        date: new Date()
-    });
-
     const [detalleOrden, setDetalleOrden] = useState({
-        id_order: "",
         id_product: "",
         price: 0,
         quantity: 0,
@@ -94,6 +87,11 @@ function AgregarOrden() {
         return_date: null
     });
 
+    const [orden, setOrden] = useState({
+        id_client: "",
+        date: new Date(),
+        detalles: [detalleOrden],
+    });
 
     useEffect(() => {
         axios
@@ -114,15 +112,6 @@ function AgregarOrden() {
             .catch((err) => {
                 console.log('No se encontraron productos.', err)
             });
-        axios
-            .get("http://localhost:8000/api/ordenes")
-            .then((response) => response.data)
-            .then((data) => {
-                setOrdenes(data);
-            })
-            .catch((err) => {
-                console.log('No se encontraron ordenes.', err)
-            });
     }, []);
 
     const onSubmit = (e) => {
@@ -131,18 +120,23 @@ function AgregarOrden() {
 
     function handleChange(e) {
         setChecked(e.target.checked);
+    
+        if (e.target.checked) {
+            setDetalleOrden({
+                ...detalleOrden,
+                status: "prestado"
+            });
+        } else {
+            setDetalleOrden({
+                ...detalleOrden,
+                status: ""
+            });
+        }
     }
 
-    const onChangeO = (e) => {
+    const onChange = (e) => {
         setOrden({
             ...orden,
-            [e.target.name]: e.target.value
-        });
-    }
-
-    const onChangeD = (e) => {
-        setDetalleOrden({
-            ...detalleOrden,
             [e.target.name]: e.target.value
         });
     }
@@ -154,6 +148,97 @@ function AgregarOrden() {
         });
     };
 
+    const onChangeDetalleOrden = (e) => {
+        const { name, value } = e.target;
+    
+        // If the changed field is 'quantity', calculate the new price
+        if (name === 'quantity') {
+            const product = productos.find(producto => producto._id === detalleOrden.id_product);
+            const salePrice = product ? parseFloat(product.sale_price.$numberDecimal) : 0;
+            const quantity = parseInt(value, 10);
+            const newPrice = salePrice * quantity;
+    
+            setDetalleOrden({
+                ...detalleOrden,
+                [name]: value,
+                price: newPrice
+            });
+        } else {
+            setDetalleOrden({
+                ...detalleOrden,
+                [name]: value
+            });
+        }
+    
+        //console.log("DETALLE ORDEN: ", detalleOrden);
+    };
+
+    const handleLoanDateChange = (date) => {
+        setDetalleOrden({
+            ...detalleOrden,
+            loan_date: date
+        });
+    };
+    
+    const handleReturnDateChange = (date) => {
+        setDetalleOrden({
+            ...detalleOrden,
+            return_date: date
+        });
+    };
+
+    const agregarDetalleOrden = () => {
+        // Create a new detalleOrden object with the current state values
+        const newDetalleOrden = { ...detalleOrden };
+    
+        // Add the new detalleOrden to the detalles array of orden
+        setOrden(prevOrden => ({
+            ...prevOrden,
+            detalles: [...prevOrden.detalles, newDetalleOrden]
+        }));
+    
+        // Update the rows data for the DataGrid
+        setOrdenes(prevRows => {
+            // Check if orden with the same id_client exists
+            const existingOrden = prevRows.find(row => row.id_client === orden.id_client);
+    
+            if (existingOrden) {
+                // Update the existing orden with the new detalleOrden
+                return prevRows.map(row => {
+                    if (row.id_client === orden.id_client) {
+                        return {
+                            ...row,
+                            detalles: [...row.detalles, newDetalleOrden]
+                        };
+                    }
+                    return row;
+                });
+            } else {
+                // Add a new orden with the new detalleOrden
+                return [...prevRows, {
+                    ...orden,
+                    detalles: [newDetalleOrden]
+                }];
+            }
+        });
+    
+        // Clear the fields for the next entry
+        setDetalleOrden({
+            id_product: "",
+            price: 0,
+            quantity: 0,
+            status: "",
+            loan_date: null,
+            return_date: null
+        });
+    };
+    
+    // Handle click event for "Agregar Orden" button
+    const handleAgregarOrdenClick = () => {
+        agregarDetalleOrden();
+        console.log("ORDENES: ", ordenes)
+    };
+
     return (
         <div style={{ backgroundColor: '#f2f2f2' }}>
             <h1 id='Titulo'>
@@ -163,7 +248,7 @@ function AgregarOrden() {
                 <form onSubmit={onSubmit}>
                     <div style={{ display: 'flex' }}>
                         <div id='textfieldsOrdenes'>
-                            <select id='selectOrden' name="id_client" value={orden.id_client} onChange={onChangeO} style={{ width: '65.5ch' }}>
+                            <select id='selectOrden' name="id_client" value={orden.id_client} onChange={onChange} style={{ width: '65.5ch' }}>
                                 <option value="" style={{ fontStyle: 'italic' }}>--Seleccione un Cliente--</option>
                                 {clientes.map((cliente) => (
                                     <option key={cliente._id} value={cliente._id}>{cliente.name}</option>
@@ -177,7 +262,7 @@ function AgregarOrden() {
 
                     <div className='productos'>
                         <div id='textfieldsOrdenes'>
-                            <select id='selectOrden' name="id_product" value={detalleOrden.id_product} onChange={onChangeD} style={{ width: '45ch' }}>
+                        <select id='selectOrden' name="id_product" value={detalleOrden.id_product} onChange={onChangeDetalleOrden} style={{ width: '45ch' }}>
                                 <option value="" style={{ fontStyle: 'italic' }}>--Seleccione un Producto--</option>
                                 {productos.map((producto) => (
                                     <option key={producto._id} value={producto._id}>{producto.name}</option>
@@ -185,14 +270,15 @@ function AgregarOrden() {
                             </select>
                         </div>
                         <div id='textfieldsOrdenes'>
-                            <input id='textfieldOrden' name='quantity' placeholder='Cantidad' style={{ width: '12ch', marginRight: '20px' }} value={detalleOrden.quantity} onChange={onChangeD}></input>
+                            <input id='textfieldOrden' name='quantity' placeholder='Cantidad' style={{ width: '12ch', marginRight: '20px' }} value={detalleOrden.quantity} onChange={onChangeDetalleOrden}></input>
                             <label id='textfieldLabel'>Cantidad</label>
                         </div>
 
                         <FormControlLabel control={<Checkbox onChange={handleChange} />} label="Prestado" />
                         {checked ? (
                             <div style={{ marginRight: '15px' }}>
-                                <DatePicker label={'Retorno: '} style={{ marginRight: '10px', width: '240px' }} format='dd-MMM-yyyy' value={detalleOrden.return_date} ></DatePicker>
+                                <DatePicker label={'Prestamo: '} style={{ marginRight: '10px', width: '240px' }} format='dd-MMM-yyyy' onChange={handleLoanDateChange} ></DatePicker>
+                                <DatePicker label={'Retorno: '} style={{ marginRight: '10px', width: '240px' }} format='dd-MMM-yyyy' onChange={handleReturnDateChange} ></DatePicker>
                             </div>
                         ) : (
                             <div> </div>
@@ -201,6 +287,7 @@ function AgregarOrden() {
                         <button
                             id='button_Agr'
                             type="button"
+                            onClick={handleAgregarOrdenClick}
                             style={{ display: 'flex', alignItems: 'center', justifyContent: 'center' }}
                             >
                             <KeyboardAddIcon
@@ -216,7 +303,7 @@ function AgregarOrden() {
                         <DataGrid
                             rows={ordenes}
                             columns={columns}
-                            getRowId={(row) => row._id}
+                            getRowId={(row) => row.id_client}
                             initialState={{
                                 pagination: {
                                     paginationModel: { page: 0, pageSize: 5 },

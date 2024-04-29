@@ -84,11 +84,11 @@ function Ordenes() {
         {
             field: 'price',
             headerName: 'Precio',
-            width: 200,
+            width: 120,
             renderCell: (params) => (<span>{params.value.$numberDecimal}</span>)
         },
-        { field: 'quantity', headerName: 'Cantidad', width: 100 },
-        { field: 'status', headerName: 'Estado', width: 200 },
+        { field: 'quantity', headerName: 'Cantidad', width: 120 },
+        { field: 'status', headerName: 'Estado', width: 120 },
         {
             field: 'loan_date',
             headerName: 'Prestamo',

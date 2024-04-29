@@ -25,6 +25,33 @@ exports.getProductos = async (req, res) => {
     }
 }
 
+exports.getProductosById = async (req, res) => {
+    const { id } = req.params;
+    const producto = await Producto.findById(id);
+
+    try
+    {
+        if (!producto)
+        {
+            return res.status(400).json({
+                success: false,
+                message: "Este producto no existe."
+            })
+        }
+        
+        res.json(producto);
+    }
+    catch (error)
+    {
+        console.log(error);
+        res.status(400).json({
+            success: false,
+            message: error.message
+        })
+    }
+}
+
+
 exports.getProductosLikeName = async (req, res) => {
     const { name } = req.params;
     const producto = await Producto.find({ 

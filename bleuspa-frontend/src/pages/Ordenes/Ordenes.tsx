@@ -14,11 +14,11 @@ function Ordenes() {
     const handleClick_AgrOrden = () => navigate('/ordenes/agregarorden');
     const handleClick_EdtOrden = () => navigate('/ordenes/editarorden');
 
-    // State to keep track of selected rows
     const [ordenes, setOrdenes] = useState([]);
     const [detalles, setDetalles] = useState([]);
     const [selectedRows, setSelectedRows] = useState<string[]>([]);
-    const [selectedRowDetails, setSelectedRowDetails] = useState(null);
+
+    const hideDiv = selectedRows.length > 0;
 
     useEffect(() => {
         axios
@@ -30,57 +30,80 @@ function Ordenes() {
                     date: formatDate(item.date)
                 }));
                 setOrdenes(changedData);
-                //console.log(changedData);
             })
             .catch((err) => {
                 console.log('No se encontraron ordenes.')
             });
     }, []);
 
-    const fetchDetails = (id) => {
+    const fetchOrden = (id) => {
         axios
-            .get(`http://localhost:8000/api/detallesorden/id_order/${id}`)
+            .get(`http://localhost:8000/api/ordenes/id/${id}`)
             .then((response) => response.data)
-            .then((data) => {
-                const changedData = data.map(item => ({
-                    ...item,
-                    return_date: formatDate(item.return_date)
-                }));
-                setDetalles(changedData);
+            .then(async (data) => {
+                if (Array.isArray(data) && data.length > 0 && Array.isArray(data[0].detalles)) {
+                    const detallesWithNames = await fetchProductNames(data[0].detalles);
+                    setDetalles(detallesWithNames);
+                } else {
+                    console.log('Detalles de orden no encontrados o no es un array.');
+                }
             })
             .catch((err) => {
-                console.log('No se encontraron detalles de orden.')
+                console.log('Error al obtener detalles de orden:', err);
             });
+    };
+
+    const fetchProductNames = async (detalles) => {
+        const promises = detalles.map(async (detalle) => {
+            try {
+                const response = await axios.get(`http://localhost:8000/api/productos/id/${detalle.id_product}`);
+                return { ...detalle, name: response.data.name };
+            } catch (error) {
+                console.error(`Error fetching product name for ID ${detalle.id_product}:`, error);
+                return detalle;
+            }
+        });
+
+        return Promise.all(promises);
     };
 
     const handleSelectionChange = (selectionModel) => {
         setSelectedRows(selectionModel as string[]);
         if (selectionModel.length === 1) {
-            const selectedRow = ordenes.find(row => row._id === selectionModel[0]);
-            setSelectedRowDetails(null);
-            fetchDetails(selectedRow._id);
+            fetchOrden(selectionModel[0]);
         }
     };
 
     const columns = [
         { field: 'date', headerName: 'Registro de Venta', width: 170 },
         { field: 'name', headerName: 'Nombre del Cliente', width: 200 },
-        { field: 'total_quantity', headerName: 'Cantidad de Productos', width: 180 },
-        { 
-            field: 'total_sale', 
-            headerName: 'Total de Pago', 
-            width: 100,
-            renderCell: (params) => (<span>{params.value.$numberDecimal}</span>)
-        },
     ]
 
-    const columnsDetalle = [
-        { field: 'id_order', headerName: 'ID Orden', width: 220 },
-        { field: 'name', headerName: 'Producto', width: 250 },
-        { field: 'quantity', headerName: 'Cantidad', width: 80 },
-        { field: 'status', headerName: 'Estado', width: 100 },
-        { field: 'return_date', headerName: 'Fecha Devolución', width: 250 },
-    ]
+    const columnsDetalles = [
+        { field: 'name', headerName: 'Nombre del Producto', width: 300 },
+        {
+            field: 'price',
+            headerName: 'Precio',
+            width: 200,
+            renderCell: (params) => (<span>{params.value.$numberDecimal}</span>)
+        },
+        { field: 'quantity', headerName: 'Cantidad', width: 100 },
+        { field: 'status', headerName: 'Estado', width: 200 },
+        {
+            field: 'loan_date',
+            headerName: 'Prestamo',
+            width: 200,
+            hide: (params) => params.row.status === '' || params.row.status === null || params.row.status === undefined,
+            renderCell: (params) => params.row.status ? formatDate(params.row.loan_date) : ''
+        },
+        {
+            field: 'return_date',
+            headerName: 'Retorno',
+            width: 200,
+            hide: (params) => params.row.status === '' || params.row.status === null || params.row.status === undefined,
+            renderCell: (params) => params.row.status ? formatDate(params.row.return_date) : ''
+        },
+    ];
 
     const formatDate = (dateString) => {
         const date = new Date(dateString);
@@ -130,7 +153,6 @@ function Ordenes() {
                             ...row,
                             id: row.id,
                             name: row.cliente.name,
-
                         }))}
                         columns={columns}
                         getRowId={(row) => row._id}
@@ -145,14 +167,12 @@ function Ordenes() {
 
                     />
                 </div>
-                <div style={{ height: 400, width: '100%' }}>
+
+                {hideDiv && 
+                    <div style={{ height: 300, width: '100%', marginBottom: "10px" }}>
                     <DataGrid
-                        rows={detalles.map(row => ({
-                            ...row,
-                            id: row.id,
-                            name: row.producto.name
-                        }))}
-                        columns={columnsDetalle}
+                        rows={detalles}
+                        columns={columnsDetalles}
                         getRowId={(row) => row._id}
                         initialState={{
                             pagination: {
@@ -163,6 +183,7 @@ function Ordenes() {
                         checkboxSelection
                     />
                 </div>
+                }
             </div>
         </div>
     );

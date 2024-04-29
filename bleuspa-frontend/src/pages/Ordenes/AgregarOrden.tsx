@@ -1,65 +1,12 @@
 import './Ordenes.css'
+import 'rsuite/dist/rsuite-rtl.css'
 
 import React, { useEffect, useState } from 'react';
-import DateRPicker from '../../components/Calendar/DateRangePicker';
 import { DatePicker } from 'rsuite';
-import { Checkbox, Divider, FormControlLabel, SvgIcon, SvgIconProps, TextField } from '@mui/material';
+import { Checkbox, Divider, FormControlLabel, SvgIcon, SvgIconProps } from '@mui/material';
 import { DataGrid, GridColDef } from '@mui/x-data-grid';
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
-
-const columns: GridColDef[] = [
-    { field: 'id', headerName: 'ID', width: 90 },
-    {
-        field: 'firstName',
-        headerName: 'First name',
-        width: 150,
-        editable: true,
-    },
-    {
-        field: 'lastName',
-        headerName: 'Last name',
-        width: 150,
-        editable: true,
-    },
-    {
-        field: 'age',
-        headerName: 'Age',
-        type: 'number',
-        width: 110,
-        editable: true,
-    },
-    {
-        field: '   ', width: 80, sortable: false, filterable: false, renderCell: (params) => {
-            return (
-                <button id='button_Del' style={{ display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-                    <KeyboardClearIcon
-
-                        sx={[
-                            {
-                                '&': {
-                                    color: '#808080',
-                                    backgroundColor: 'transparent'
-                                }
-                            },
-                            {
-                                '&:hover': {
-                                    color: '#e44242'
-                                },
-                            },
-                        ]}
-                    />
-                </button>
-            );
-        }
-    }
-];
-
-const rows = [
-    { id: 1, lastName: 'Snow', firstName: 'Jon', age: 14 },
-    { id: 1, lastName: 'Snow', firstName: 'Jon', age: 14 },
-    { id: 1, lastName: 'Snow', firstName: 'Jon', age: 14 },
-];
 
 function KeyboardReturnIcon(props: SvgIconProps) {
     return (
@@ -90,7 +37,49 @@ function AgregarOrden() {
     const navigate = useNavigate();
     const handleClick_Ord = () => navigate('/ordenes');
 
+    const [clientes, setClientes] = useState([]);
+    const [productos, setProductos] = useState([]);
+    const [ordenes, setOrdenes] = useState([]);
+
+    const columns: GridColDef[] = [
+        {
+            field: 'name', headerName: 'Producto', width: 250, renderCell: (params) => {
+                const product = productos.find((producto) => producto._id === params.row.id_product);
+                return product ? product.name : '';
+            }
+        },
+        { field: 'quantity', headerName: 'Cantidad', width: 100, editable: true },
+        { field: 'status', headerName: 'Estado de Prestamo', width: 200 },
+        { field: 'price', headerName: 'Precio', width: 200 },
+        { field: 'loan_date', headerName: 'Fecha Prestado', width: 200 },
+        { field: 'return_date', headerName: 'Fecha Prestado', width: 200 },
+        {
+            field: '   ', width: 80, sortable: false, filterable: false,
+            renderCell: (params) => {
+                return (
+                    <button id='button_Del' style={{ display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                        <KeyboardClearIcon
+                            sx={[
+                                {
+                                    '&': {
+                                        color: '#808080',
+                                        backgroundColor: 'transparent'
+                                    }
+                                },
+                                {
+                                    '&:hover': {
+                                        color: '#e44242'
+                                    }
+                                }
+                            ]} />
+                    </button>
+                )
+            }
+        }
+    ];
+
     const [orden, setOrden] = useState({
+        _id: "",
         id_client: "",
         date: new Date()
     });
@@ -98,12 +87,13 @@ function AgregarOrden() {
     const [detalleOrden, setDetalleOrden] = useState({
         id_order: "",
         id_product: "",
-        price: "",
-        quantity: "",
+        price: 0,
+        quantity: 0,
+        status: "",
+        loan_date: null,
+        return_date: null
     });
 
-    const [clientes, setClientes] = useState([]);
-    const [productos, setProductos] = useState([]);
 
     useEffect(() => {
         axios
@@ -113,7 +103,7 @@ function AgregarOrden() {
                 setClientes(data);
             })
             .catch((err) => {
-                console.log('No se encontraron clientes.')
+                console.log('No se encontraron clientes.', err)
             });
         axios
             .get("http://localhost:8000/api/productos")
@@ -122,9 +112,22 @@ function AgregarOrden() {
                 setProductos(data);
             })
             .catch((err) => {
-                console.log('No se encontraron productos.')
+                console.log('No se encontraron productos.', err)
+            });
+        axios
+            .get("http://localhost:8000/api/ordenes")
+            .then((response) => response.data)
+            .then((data) => {
+                setOrdenes(data);
+            })
+            .catch((err) => {
+                console.log('No se encontraron ordenes.', err)
             });
     }, []);
+
+    const onSubmit = (e) => {
+
+    }
 
     function handleChange(e) {
         setChecked(e.target.checked);
@@ -135,7 +138,6 @@ function AgregarOrden() {
             ...orden,
             [e.target.name]: e.target.value
         });
-        console.log(orden);
     }
 
     const onChangeD = (e) => {
@@ -143,7 +145,6 @@ function AgregarOrden() {
             ...detalleOrden,
             [e.target.name]: e.target.value
         });
-        console.log(detalleOrden);
     }
 
     const handleDateChange = (date) => {
@@ -159,7 +160,7 @@ function AgregarOrden() {
                 AGREGAR ORDEN
             </h1>
             <div id='Box'>
-                <form action="">
+                <form onSubmit={onSubmit}>
                     <div style={{ display: 'flex' }}>
                         <div id='textfieldsOrdenes'>
                             <select id='selectOrden' name="id_client" value={orden.id_client} onChange={onChangeO} style={{ width: '65.5ch' }}>
@@ -169,7 +170,7 @@ function AgregarOrden() {
                                 ))}
                             </select>
                         </div>
-                        <DatePicker label={'Fecha de Registro:'} style={{}} format='dd-MM-yyyy' ></DatePicker>
+                        <DatePicker label={'Fecha de Registro:'} style={{}} format='dd-MM-yyyy' value={orden.date} onChange={handleDateChange} ></DatePicker>
                     </div>
 
                     <Divider style={{ marginBottom: '15px' }}></Divider>
@@ -184,18 +185,24 @@ function AgregarOrden() {
                             </select>
                         </div>
                         <div id='textfieldsOrdenes'>
-                            <input id='textfieldOrden' placeholder='Cantidad' style={{ width: '12ch', marginRight: '20px' }}></input>
+                            <input id='textfieldOrden' name='quantity' placeholder='Cantidad' style={{ width: '12ch', marginRight: '20px' }} value={detalleOrden.quantity} onChange={onChangeD}></input>
                             <label id='textfieldLabel'>Cantidad</label>
                         </div>
 
                         <FormControlLabel control={<Checkbox onChange={handleChange} />} label="Prestado" />
                         {checked ? (
-                            <div style={{ marginRight: '10px' }}><DateRPicker></DateRPicker> </div>
+                            <div style={{ marginRight: '15px' }}>
+                                <DatePicker label={'Retorno: '} style={{ marginRight: '10px', width: '240px' }} format='dd-MMM-yyyy' value={detalleOrden.return_date} ></DatePicker>
+                            </div>
                         ) : (
                             <div> </div>
                         )}
 
-                        <button id='button_Agr' style={{ display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                        <button
+                            id='button_Agr'
+                            type="button"
+                            style={{ display: 'flex', alignItems: 'center', justifyContent: 'center' }}
+                            >
                             <KeyboardAddIcon
                                 sx={{
                                     color: 'white',
@@ -207,8 +214,9 @@ function AgregarOrden() {
 
                     <div style={{ height: 300, width: '100%' }}>
                         <DataGrid
-                            rows={rows}
+                            rows={ordenes}
                             columns={columns}
+                            getRowId={(row) => row._id}
                             initialState={{
                                 pagination: {
                                     paginationModel: { page: 0, pageSize: 5 },
@@ -233,7 +241,7 @@ function AgregarOrden() {
                             />
                             REGRESAR
                         </button>
-                        <button id='button_acp'>AGREGAR ORDEN</button>
+                        <button type="submit" id='button_acp'>AGREGAR ORDEN</button>
                     </div>
                 </form>
             </div>

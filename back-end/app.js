@@ -11,7 +11,6 @@ const clienteRoutes = require('./routes/clientes');
 const citaRoutes = require('./routes/citas');
 const productoRoutes = require('./routes/productos');
 const ordenRoutes = require('./routes/ordenes');
-const detalleOrdenRoutes = require('./routes/detallesOrden');
 const formularioRoutes = require('./routes/formularios');
 const tratamientoRoutes = require('./routes/tratamientos');
 
@@ -32,7 +31,6 @@ app.use("/api", clienteRoutes);
 app.use("/api", citaRoutes);
 app.use("/api", productoRoutes);
 app.use("/api", ordenRoutes);
-app.use("/api", detalleOrdenRoutes);
 app.use("/api", formularioRoutes);
 app.use("/api", tratamientoRoutes);
 

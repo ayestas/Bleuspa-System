@@ -43,7 +43,7 @@ function AgregarOrden() {
 
     const columns: GridColDef[] = [
         {
-            field: 'product', headerName: 'Producto', width: 300, renderCell: (params) => {
+            field: 'product', headerName: 'Producto', width: 280, renderCell: (params) => {
                 const product = productos.find((producto) => producto._id === params.row.id_product);
                 return product ? product.name : '';
             }
@@ -90,7 +90,7 @@ function AgregarOrden() {
     const [orden, setOrden] = useState({
         id_client: "",
         date: new Date(),
-        detalles: [detalleOrden],
+        detalles: [],
     });
 
     useEffect(() => {
@@ -186,57 +186,10 @@ function AgregarOrden() {
             return_date: date
         });
     };
-
-    const agregarDetalleOrden = () => {
-        // Create a new detalleOrden object with the current state values
-        const newDetalleOrden = { ...detalleOrden };
-    
-        // Add the new detalleOrden to the detalles array of orden
-        setOrden(prevOrden => ({
-            ...prevOrden,
-            detalles: [...prevOrden.detalles, newDetalleOrden]
-        }));
-    
-        // Update the rows data for the DataGrid
-        setOrdenes(prevRows => {
-            // Check if orden with the same id_client exists
-            const existingOrden = prevRows.find(row => row.id_client === orden.id_client);
-    
-            if (existingOrden) {
-                // Update the existing orden with the new detalleOrden
-                return prevRows.map(row => {
-                    if (row.id_client === orden.id_client) {
-                        return {
-                            ...row,
-                            detalles: [...row.detalles, newDetalleOrden]
-                        };
-                    }
-                    return row;
-                });
-            } else {
-                // Add a new orden with the new detalleOrden
-                return [...prevRows, {
-                    ...orden,
-                    detalles: [newDetalleOrden]
-                }];
-            }
-        });
-    
-        // Clear the fields for the next entry
-        setDetalleOrden({
-            id_product: "",
-            price: 0,
-            quantity: 0,
-            status: "",
-            loan_date: null,
-            return_date: null
-        });
-    };
     
     // Handle click event for "Agregar Orden" button
     const handleAgregarOrdenClick = () => {
-        agregarDetalleOrden();
-        console.log("ORDENES: ", ordenes)
+        console.log("ORDENES: ", orden)
     };
 
     return (
@@ -270,15 +223,15 @@ function AgregarOrden() {
                             </select>
                         </div>
                         <div id='textfieldsOrdenes'>
-                            <input id='textfieldOrden' name='quantity' placeholder='Cantidad' style={{ width: '12ch', marginRight: '20px' }} value={detalleOrden.quantity} onChange={onChangeDetalleOrden}></input>
+                            <input id='textfieldOrden' name='quantity' placeholder='Cantidad' style={{ width: '10ch', marginRight: '20px' }} value={detalleOrden.quantity} onChange={onChangeDetalleOrden}></input>
                             <label id='textfieldLabel'>Cantidad</label>
                         </div>
 
                         <FormControlLabel control={<Checkbox onChange={handleChange} />} label="Prestado" />
                         {checked ? (
-                            <div style={{ marginRight: '15px' }}>
-                                <DatePicker label={'Prestamo: '} style={{ marginRight: '10px', width: '240px' }} format='dd-MMM-yyyy' onChange={handleLoanDateChange} ></DatePicker>
-                                <DatePicker label={'Retorno: '} style={{ marginRight: '10px', width: '240px' }} format='dd-MMM-yyyy' onChange={handleReturnDateChange} ></DatePicker>
+                            <div style={{ marginRight: '15px', display: 'flex', flexWrap: 'wrap' }}>
+                                <DatePicker label={'Prestamo: '} style={{ marginRight: '10px', width: '240px', flex: '1 0 240px' }} format='dd-MMM-yyyy' onChange={handleLoanDateChange} ></DatePicker>
+                                <DatePicker label={'Retorno: '} style={{ marginRight: '10px', width: '240px', flex: '1 0 240px' }} format='dd-MMM-yyyy' onChange={handleReturnDateChange} ></DatePicker>
                             </div>
                         ) : (
                             <div> </div>

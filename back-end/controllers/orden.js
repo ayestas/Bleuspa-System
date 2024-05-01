@@ -114,3 +114,37 @@ exports.addOrden = async (req, res) => {
         })
     }
 }
+
+exports.deleteOrden = async (req, res) => {
+    const { id } = req.params;
+
+    try
+    {
+        await Orden.findByIdAndDelete(id);
+        const ordenExist = await Orden.findById(id);
+
+        if (ordenExist)
+        {
+            return res.status(400).json({
+                success: false,
+                message: "Esta orden no se pudo eliminar."
+            })
+        }
+        else 
+        {
+            return res.status(201).json({
+                success: true,
+                message: "Orden eliminada."
+            })
+        }
+
+    }
+    catch (error)
+    {
+        console.log(error);
+        res.status(400).json({
+            success: false,
+            message: error.message
+        })
+    }
+}

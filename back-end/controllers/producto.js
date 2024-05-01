@@ -51,7 +51,6 @@ exports.getProductosById = async (req, res) => {
     }
 }
 
-
 exports.getProductosLikeName = async (req, res) => {
     const { name } = req.params;
     const producto = await Producto.find({ 
@@ -94,6 +93,40 @@ exports.addProducto = async (req, res) => {
             success: true,
             producto
         })
+    }
+    catch (error)
+    {
+        console.log(error);
+        res.status(400).json({
+            success: false,
+            message: error.message
+        })
+    }
+}
+
+exports.deleteProducto = async (req, res) => {
+    const { id } = req.params;
+
+    try
+    {
+        await Producto.findByIdAndDelete(id);
+        const productoExist = await Producto.findById(id);
+
+        if (productoExist)
+        {
+            return res.status(400).json({
+                success: false,
+                message: "Este producto no se pudo eliminar."
+            })
+        }
+        else 
+        {
+            return res.status(201).json({
+                success: true,
+                message: "Producto eliminado."
+            })
+        }
+
     }
     catch (error)
     {

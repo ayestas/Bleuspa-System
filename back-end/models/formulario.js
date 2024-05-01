@@ -1,6 +1,28 @@
 const mongoose = require('mongoose');
 const cliente = require('../models/cliente')
 
+const tratamientoSchema = new mongoose.Schema({
+    date: {
+        type: Date,
+        required : [true, 'Fecha es requerida.'],
+    },
+    product: {
+        type: String,
+        required : [true, 'Producto es requerido.'],
+        maxlength: 80
+    },
+    tolerance_time: {
+        type: String,
+        required : [true, 'Tiempo de tolerancia es requerido.'],
+        maxlength: 80
+    },
+    effect: {
+        type: String,
+        required : [true, 'Efecto es requerido.'],
+        maxlength: 80
+    }
+})
+
 const formularioSchema = new mongoose.Schema({
     id_client: {
         type: mongoose.Schema.ObjectId,
@@ -75,7 +97,10 @@ const formularioSchema = new mongoose.Schema({
     observations: {
         type: String,
         maxlength: 100
-    }
+    },
+    tratamiento: [
+        tratamientoSchema
+    ]
 })
 
 module.exports = mongoose.model("Formulario", formularioSchema);

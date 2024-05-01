@@ -16,6 +16,7 @@ function Ordenes() {
 
     const [ordenes, setOrdenes] = useState([]);
     const [detalles, setDetalles] = useState([]);
+    const [productos, setProductos] = useState([]);
     const [selectedRows, setSelectedRows] = useState<string[]>([]);
 
     const hideDiv = selectedRows.length > 0;
@@ -33,6 +34,15 @@ function Ordenes() {
             })
             .catch((err) => {
                 console.log('No se encontraron ordenes.')
+            });
+        axios
+            .get("http://localhost:8000/api/productos")
+            .then((response) => response.data)
+            .then((data) => {
+                setProductos(data);
+            })
+            .catch((err) => {
+                console.log('No se encontraron productos.', err)
             });
     }, []);
 
@@ -77,31 +87,23 @@ function Ordenes() {
     const columns = [
         { field: 'date', headerName: 'Registro de Venta', width: 170 },
         { field: 'name', headerName: 'Nombre del Cliente', width: 200 },
+        { field: 'price', headerName: 'Total de Pago', width: 200 },
     ]
 
     const columnsDetalles = [
-        { field: 'name', headerName: 'Nombre del Producto', width: 300 },
+        { field: 'name', headerName: 'Producto', width: 300 },
+        {
+            field: 'sale_price', headerName: 'Precio Unitario', width: 200, renderCell: (params) => {
+                const product = productos.find((producto) => producto._id === params.row.id_product);
+                return product ? product.sale_price.$numberDecimal : '';
+            }
+        },
+        { field: 'quantity', headerName: 'Total', width: 200 },
         {
             field: 'price',
             headerName: 'Precio',
-            width: 120,
+            width: 200,
             renderCell: (params) => (<span>{params.value.$numberDecimal}</span>)
-        },
-        { field: 'quantity', headerName: 'Cantidad', width: 120 },
-        { field: 'status', headerName: 'Estado', width: 120 },
-        {
-            field: 'loan_date',
-            headerName: 'Prestamo',
-            width: 200,
-            hide: (params) => params.row.status === '' || params.row.status === null || params.row.status === undefined,
-            renderCell: (params) => params.row.status ? formatDate(params.row.loan_date) : ''
-        },
-        {
-            field: 'return_date',
-            headerName: 'Retorno',
-            width: 200,
-            hide: (params) => params.row.status === '' || params.row.status === null || params.row.status === undefined,
-            renderCell: (params) => params.row.status ? formatDate(params.row.return_date) : ''
         },
     ];
 
@@ -153,6 +155,7 @@ function Ordenes() {
                             ...row,
                             id: row.id,
                             name: row.cliente.name,
+                            sale_price: row.cliente.sale_price
                         }))}
                         columns={columns}
                         getRowId={(row) => row._id}
@@ -168,21 +171,21 @@ function Ordenes() {
                     />
                 </div>
 
-                {hideDiv && 
+                {hideDiv &&
                     <div style={{ height: 300, width: '100%', marginBottom: "10px" }}>
-                    <DataGrid
-                        rows={detalles}
-                        columns={columnsDetalles}
-                        getRowId={(row) => row._id}
-                        initialState={{
-                            pagination: {
-                                paginationModel: { page: 0, pageSize: 5 },
-                            },
-                        }}
-                        pageSizeOptions={[5, 10]}
-                        checkboxSelection
-                    />
-                </div>
+                        <DataGrid
+                            rows={detalles}
+                            columns={columnsDetalles}
+                            getRowId={(row) => row._id}
+                            initialState={{
+                                pagination: {
+                                    paginationModel: { page: 0, pageSize: 5 },
+                                },
+                            }}
+                            pageSizeOptions={[5, 10]}
+                            checkboxSelection
+                        />
+                    </div>
                 }
             </div>
         </div>

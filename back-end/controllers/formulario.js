@@ -12,14 +12,6 @@ exports.getFormularios = async (req, res) => {
       	},
     },
     {
-      	$lookup: {
-        	from: "tratamientos",
-        	localField: "_id",
-        	foreignField: "id_form",
-        	as: "tratamiento",
-      	},
-    },
-    {
       	$project: {
         	_id: 1,
         	id_client: 1,
@@ -37,7 +29,7 @@ exports.getFormularios = async (req, res) => {
         	aesthetic_surgeries: 1,
         	cutaneous_surgeries: 1,
         	observations: 1,
-        	tratamiento: "$tratamiento",
+        	tratamiento: 1,
       	},
     }]);
 
@@ -77,14 +69,6 @@ exports.getFormularioLikeName = async (req, res) => {
       	},
     },
     {
-      	$lookup: {
-        	from: "tratamientos",
-        	localField: "_id",
-        	foreignField: "id_form",
-        	as: "tratamiento",
-      	},
-    },
-    {
       	$match: {
         	"cliente.name": { 
 				$regex: name, 
@@ -110,7 +94,7 @@ exports.getFormularioLikeName = async (req, res) => {
         	aesthetic_surgeries: 1,
         	cutaneous_surgeries: 1,
         	observations: 1,
-        	tratamiento: "$tratamiento",
+        	tratamiento: 1,
       	},
     }]);
 

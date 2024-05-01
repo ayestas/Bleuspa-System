@@ -12,7 +12,6 @@ const citaRoutes = require('./routes/citas');
 const productoRoutes = require('./routes/productos');
 const ordenRoutes = require('./routes/ordenes');
 const formularioRoutes = require('./routes/formularios');
-const tratamientoRoutes = require('./routes/tratamientos');
 
 //Connect DB
 mongoose.connect(process.env.DATABASE, {
@@ -32,7 +31,6 @@ app.use("/api", citaRoutes);
 app.use("/api", productoRoutes);
 app.use("/api", ordenRoutes);
 app.use("/api", formularioRoutes);
-app.use("/api", tratamientoRoutes);
 
 const port = process.env.PORT || 8000;
 

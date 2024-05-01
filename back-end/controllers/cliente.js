@@ -85,3 +85,37 @@ exports.addCliente = async (req, res) => {
         })
     }
 }
+
+exports.deleteCliente = async (req, res) => {
+    const { id } = req.params;
+
+    try
+    {
+        await Cliente.findByIdAndDelete(id);
+        const clienteExist = await Cliente.findById(id);
+
+        if (clienteExist)
+        {
+            return res.status(400).json({
+                success: false,
+                message: "Este cliente no se pudo eliminar."
+            })
+        }
+        else 
+        {
+            return res.status(201).json({
+                success: true,
+                message: "Cliente eliminado."
+            })
+        }
+
+    }
+    catch (error)
+    {
+        console.log(error);
+        res.status(400).json({
+            success: false,
+            message: error.message
+        })
+    }
+}

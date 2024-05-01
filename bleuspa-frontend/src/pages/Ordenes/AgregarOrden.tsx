@@ -44,10 +44,7 @@ function AgregarOrden() {
     const [detalleOrden, setDetalleOrden] = useState({
         id_product: "",
         price: 0,
-        quantity: 0,
-        status: "",
-        loan_date: null,
-        return_date: null
+        quantity: 0
     });
 
     const [orden, setOrden] = useState({
@@ -63,11 +60,13 @@ function AgregarOrden() {
                 return product ? product.name : '';
             }
         },
-        { field: 'price', headerName: 'Precio', width: 120, renderCell: (params) => params.row.price },
-        { field: 'quantity', headerName: 'Cantidad', width: 120, renderCell: (params) => params.row.quantity },
-        { field: 'status', headerName: 'Estado', width: 120, renderCell: (params) => params.row.status },
-        { field: 'loan_date', headerName: 'Fecha Prestado', width: 200, renderCell: (params) => params.row.loan_date },
-        { field: 'return_date', headerName: 'Fecha Devolución', width: 200, renderCell: (params) => params.row.return_date },
+        { field: 'sale_price', headerName: 'Precio Unitario', width: 200, renderCell: (params) => {
+                const product = productos.find((producto) => producto._id === params.row.id_product);
+                return product ? product.sale_price.$numberDecimal : '';
+            } 
+        },
+        { field: 'quantity', headerName: 'Cantidad', width: 200, renderCell: (params) => params.row.quantity },
+        { field: 'price', headerName: 'Total', width: 200, renderCell: (params) => params.row.price },
         {
             field: '   ', width: 80, sortable: false, filterable: false,
             renderCell: (params) => {
@@ -150,8 +149,7 @@ function AgregarOrden() {
     const handleChange = (e) => {
         setChecked(e.target.checked);
         setDetalleOrden({
-            ...detalleOrden,
-            status: e.target.checked ? "prestado" : ""
+            ...detalleOrden
         });
     };
 
@@ -192,31 +190,8 @@ function AgregarOrden() {
         //console.log("DETALLE ORDEN: ", detalleOrden);
     };
 
-    const handleLoanDateChange = (date) => {
-        setDetalleOrden({
-            ...detalleOrden,
-            loan_date: date ? date.toLocaleDateString() : null // Check if date is null before formatting
-        });
-    };
-
-    const handleReturnDateChange = (date) => {
-        setDetalleOrden({
-            ...detalleOrden,
-            return_date: date ? date.toLocaleDateString() : null // Check if date is null before formatting
-        });
-    };
-
     const handleAgregarOrdenClick = () => {
         let updatedDetalleOrden = { ...detalleOrden };
-    
-        // Check if status is empty, set loan_date and return_date to null
-        if (updatedDetalleOrden.status === "") {
-            updatedDetalleOrden = {
-                ...updatedDetalleOrden,
-                loan_date: null,
-                return_date: null
-            };
-        }
     
         // Check if the selected product already exists in the detalles array
         const existingDetalleIndex = orden.detalles.findIndex((detalle) => detalle.id_product === updatedDetalleOrden.id_product);
@@ -237,10 +212,7 @@ function AgregarOrden() {
             setDetalleOrden({
                 id_product: "",
                 price: 0,
-                quantity: 0,
-                status: "",
-                loan_date: null,
-                return_date: null
+                quantity: 0
             });
         }
     
@@ -281,16 +253,6 @@ function AgregarOrden() {
                             <input id='textfieldOrden' name='quantity' placeholder='Cantidad' style={{ width: '10ch', marginRight: '20px' }} value={detalleOrden.quantity} onChange={onChangeDetalleOrden}></input>
                             <label id='textfieldLabel'>Cantidad</label>
                         </div>
-
-                        <FormControlLabel control={<Checkbox onChange={handleChange} />} label="Prestado" />
-                        {checked ? (
-                            <div style={{ marginRight: '15px', display: 'flex', flexWrap: 'wrap' }}>
-                                <DatePicker label={'Prestamo: '} style={{ marginRight: '10px', width: '240px', flex: '1 0 240px' }} format='dd-MMM-yyyy' onChange={handleLoanDateChange} />
-                                <DatePicker label={'Retorno: '} style={{ marginRight: '10px', width: '240px', flex: '1 0 240px' }} format='dd-MMM-yyyy' onChange={handleReturnDateChange} />
-                            </div>
-                        ) : (
-                            <div> </div>
-                        )}
 
                         <button
                             id='button_Agr'

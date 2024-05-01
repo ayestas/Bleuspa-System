@@ -177,3 +177,37 @@ exports.addCita = async (req, res) => {
         })
     }
 }
+
+exports.deleteCita = async (req, res) => {
+    const { id } = req.params;
+
+    try
+    {
+        await Cita.findByIdAndDelete(id);
+        const citaExist = await Cita.findById(id);
+
+        if (citaExist)
+        {
+            return res.status(400).json({
+                success: false,
+                message: "Esta cita no se pudo eliminar."
+            })
+        }
+        else 
+        {
+            return res.status(201).json({
+                success: true,
+                message: "Cita eliminada."
+            })
+        }
+
+    }
+    catch (error)
+    {
+        console.log(error);
+        res.status(400).json({
+            success: false,
+            message: error.message
+        })
+    }
+}
